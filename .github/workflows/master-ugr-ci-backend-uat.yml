@@ -1,0 +1,89 @@
+name: Build and deploy .NET Core application to Web App master-ugr-ci-backend-uat
+
+on:
+  # Trigger the workflow manually or on pull requests to the 'uat' branch
+  workflow_dispatch:
+  pull_request:
+    branches:
+    - uat
+
+env:
+  # Environment variables for the workflow
+  AZURE_WEBAPP_NAME: master-ugr-ci-backend-uat
+  AZURE_WEBAPP_PACKAGE_PATH: calculator.backend\publish
+  CONFIGURATION: Release
+  DOTNET_CORE_VERSION: 8.0.x
+  WORKING_DIRECTORY: calculator.backend
+  CALCULATOR_BACKEND_URL: https://master-ugr-ci-backend-uat.azurewebsites.net
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+      # Checkout the repository
+
+    - name: Setup .NET SDK
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: ${{ env.DOTNET_CORE_VERSION }}
+      # Setup the .NET SDK version specified in the environment variables
+
+    - name: Restore
+      run: dotnet restore "${{ env.WORKING_DIRECTORY }}"
+      # Restore the dependencies for the .NET project
+
+    - name: Build
+      run: dotnet build "${{ env.WORKING_DIRECTORY }}" --configuration ${{ env.CONFIGURATION }} --no-restore
+      # Build the .NET project in Release configuration without restoring dependencies
+
+    - name: Publish
+      run: dotnet publish "${{ env.WORKING_DIRECTORY }}" --configuration ${{ env.CONFIGURATION }} --no-build --output "${{ env.AZURE_WEBAPP_PACKAGE_PATH }}"
+      # Publish the .NET project to the specified output path without building
+
+    - name: Publish Artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: webapp
+        path: ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}
+      # Upload the published artifacts for later use in the deploy job
+  deploy:
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+    - name: Download artifact from build job
+      uses: actions/download-artifact@v4
+      with:
+        name: webapp
+        path: ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}
+      # Download the artifacts uploaded in the build job
+
+    - name: Azure Login
+      uses: azure/login@v2
+      with:
+        creds: ${{ secrets.master_ugr_ci_backend_uat_SPN }}
+      # Login to Azure using the service principal credentials stored in secrets
+
+    - name: Deploy to Azure WebApp
+      uses: azure/webapps-deploy@v2
+      with:
+        app-name: ${{ env.AZURE_WEBAPP_NAME }}
+        package: ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}
+      # Deploy the application to the specified Azure Web App
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        # Checkout the repository (each job runs in a fresh VM)
+  
+      - name: Setup .NET SDK
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: ${{ env.DOTNET_CORE_VERSION }}
+        # Setup the .NET SDK version specified in the environment variables
+      - name: run tests
+        run: dotnet test "${{ env.WORKING_DIRECTORY }}\tests\${{ env.WORKING_DIRECTORY }}.test\"
+ 
+    
+
+
