@@ -1,10 +1,38 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
-VisualStudioVersion = 17.12.35527.113 d17.12
+VisualStudioVersion = 17.12.35527.113
 MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "calculator.backend", "calculator.backend\calculator.backend.csproj", "{A6CF7711-D1CB-4AE7-9222-DD2028315866}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{F4BCCE8B-80B6-4283-9181-F3C1C97D4EFD}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "calculator.backend.test", "tests\calculator.backend.test\calculator.backend.test.csproj", "{362229D0-571A-4654-A02E-7B14E2512A11}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{106019E0-924E-4AB9-97CA-4461F353C754}"
+	ProjectSection(SolutionItems) = preProject
+		README.md = README.md
+	EndProjectSection
+EndProject
 Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{A6CF7711-D1CB-4AE7-9222-DD2028315866}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A6CF7711-D1CB-4AE7-9222-DD2028315866}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A6CF7711-D1CB-4AE7-9222-DD2028315866}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A6CF7711-D1CB-4AE7-9222-DD2028315866}.Release|Any CPU.Build.0 = Release|Any CPU
+		{362229D0-571A-4654-A02E-7B14E2512A11}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{362229D0-571A-4654-A02E-7B14E2512A11}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{362229D0-571A-4654-A02E-7B14E2512A11}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{362229D0-571A-4654-A02E-7B14E2512A11}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{362229D0-571A-4654-A02E-7B14E2512A11} = {F4BCCE8B-80B6-4283-9181-F3C1C97D4EFD}
 	EndGlobalSection
 EndGlobal

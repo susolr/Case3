@@ -1,0 +1,6 @@
+@calculator.backend_HostAddress = http://localhost:5242
+
+GET {{calculator.backend_HostAddress}}/api/Calculator/
+Accept: application/json
+
+###
