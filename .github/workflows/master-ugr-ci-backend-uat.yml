@@ -10,18 +10,20 @@ on:
 env:
   # Environment variables for the workflow
   AZURE_WEBAPP_NAME: master-ugr-ci-backend-uat
-  AZURE_WEBAPP_PACKAGE_PATH: Case3\master-ugr.calculator.back-end\calculator.backend\publish
+  AZURE_WEBAPP_PACKAGE_PATH: master-ugr.calculator.back-end/calculator.backend/publish
   CONFIGURATION: Release
   DOTNET_CORE_VERSION: 8.0.x
-  WORKING_DIRECTORY: Case3\master-ugr.calculator.back-end\calculator.backend
-  CALCULATOR_BACKEND_URL: https://master-ugr-ci-backend-uat.azurewebsites.net
+  WORKING_DIRECTORY: master-ugr.calculator.back-end/calculator.backend
+  TEST_PATH: master-ugr.calculator.back-end/tests/calculator.backend.test
+  CALCULATOR_BACKEND_URL: https://master-ugr-ci-backend-uat.azurewebsites.net/
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
-      # Checkout the repository
-
+      # Checkout the repository      
+    - name: Listing current dir
+      run: ls -la
     - name: Setup .NET SDK
       uses: actions/setup-dotnet@v4
       with:
@@ -57,17 +59,13 @@ jobs:
         path: ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}
       # Download the artifacts uploaded in the build job
 
-    - name: Azure Login
-      uses: azure/login@v2
-      with:
-        creds: ${{ secrets.master_ugr_ci_backend_uat_SPN }}
-      # Login to Azure using the service principal credentials stored in secrets
-
     - name: Deploy to Azure WebApp
       uses: azure/webapps-deploy@v2
       with:
         app-name: ${{ env.AZURE_WEBAPP_NAME }}
         package: ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}
+        publish-profile: ${{ secrets.MASTER_UGR_CI_BACKEND_UAT_SPN }}
+        
       # Deploy the application to the specified Azure Web App
   test:
     runs-on: ubuntu-latest
@@ -82,7 +80,7 @@ jobs:
           dotnet-version: ${{ env.DOTNET_CORE_VERSION }}
         # Setup the .NET SDK version specified in the environment variables
       - name: run tests
-        run: dotnet test "${{ env.WORKING_DIRECTORY }}\tests\${{ env.WORKING_DIRECTORY }}.test\"
+        run: dotnet test ${{ env.TEST_PATH }}
  
     
 
