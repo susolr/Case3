@@ -1,8 +1,8 @@
 # THE ULTIMATE CALCULATOR
 ## Domain Breakdown
-- **src/**: Contains the source code for the Calculator.
-- **tests/**: Contains the unit tests and other test-related code for the domain.
-- **.sln**: The solution file for the domain.
+- master-ugr.calculator.*/**: Contains the source code for the Calculator.
+- master-ugr.calculator.*/tests/master-ugr.calculator.*.tests: Contains the unit tests and other test-related code for the domain.
+- master-ugr.calculator.*/ master-ugr.calculator.*.sln: The solution file for the domain.
 
 ## Getting Started
 To get started with any of the domains, open the respective solution file (.sln) in Visual Studio 2022. From there, you can build and run the projects, as well as execute the tests.
