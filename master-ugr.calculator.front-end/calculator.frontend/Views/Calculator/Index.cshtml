@@ -1,0 +1,36 @@
+﻿@{
+    ViewBag.Title = "Calculator";
+}
+
+<h2>Calculator</h2>
+
+@using (Html.BeginForm())
+{
+        <div>
+            <label for="firstNumber">First Number:</label>
+            <input type="text" id="firstNumber" name="firstNumber" />
+        </div>
+        <div>
+            <label for="secondNumber">Second Number:</label>
+            <input type="text" id="secondNumber" name="secondNumber" />
+        </div>
+        <div>
+            <label for="operation">Operation:</label>
+            <select id="operation" name="operation">
+                <option value="Add">Add</option>
+                <option value="Subtract">Subtract</option>
+                <option value="Multiply">Multiply</option>
+                <option value="Divide">Divide</option>
+            </select>
+        </div>
+        <div>
+                <input type="submit" value="Calculate" id="calculateButton"/>
+        </div>
+}
+
+@if (ViewBag.Result != null)
+{
+        <div>
+                <h3>Result:<div id="result"> @ViewBag.Result</div></h3>
+        </div>
+}
