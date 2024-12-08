@@ -1,0 +1,145 @@
+name: Build and deploy .NET Core application to Web App into production
+
+on:
+  # Trigger the workflow manually or on push to the 'master' branch
+  workflow_dispatch:
+  push:
+    branches:
+    - main
+
+env:
+    # Front-end Domain    
+    AZURE_WEBAPP_NAME_FRONT_END_UAT: master-ugr-ci-frontend-uat
+    AZURE_WEBAPP_NAME_FRONT_END_PROD: master-ugr-ci-frontend-prod
+    AZURE_WEBAPP_PACKAGE_PATH_FRONT_END: master-ugr.calculator.front-end/calculator.frontend/publish
+    WORKING_DIRECTORY_FRONT_END: master-ugr.calculator.front-end/calculator.frontend
+    CALCULATOR_FRONTEND_URL_UAT: https://master-ugr-ci-frontend-uat.azurewebsites.net
+    TEST_PATH_FRONT_END: master-ugr.calculator.front-end/tests/calculator.frontend.tests
+    # Back-end Domain
+    AZURE_WEBAPP_NAME_BACKEND_UAT: master-ugr-ci-backend-uat
+    AZURE_WEBAPP_NAME_BACKEND_PROD: master-ugr-ci-backend-prod
+    AZURE_WEBAPP_PACKAGE_PATH_BACK_END: master-ugr.calculator.back-end/calculator.backend/publish
+    WORKING_DIRECTORY_BACKEND: master-ugr.calculator.back-end/calculator.backend
+    CALCULATOR_BACKEND_URL_UAT: https://master-ugr-ci-backend-uat.azurewebsites.net/
+    TEST_PATH_BACKEND: master-ugr.calculator.back-end/tests/calculator.backend.tests
+    # Library Domain
+    TEST_PATH_LIB: master-ugr.calculator.lib/tests/calculator.lib.tests
+
+    CONFIGURATION: Release
+    DOTNET_CORE_VERSION: 8.0.x
+jobs:
+   tests_calculator:
+     runs-on: ubuntu-latest
+     steps: 
+        - uses: actions/checkout@v4
+            # Checkout the repository (each job runs in a fresh VM)
+    
+        - name: Setup .NET SDK
+          uses: actions/setup-dotnet@v4
+          with:
+            dotnet-version: ${{ env.DOTNET_CORE_VERSION }}
+            # Setup the .NET SDK version specified in the environment variables
+        - name: Copying Original Cucumber files from item folder
+          run: |
+            cp -r items/*.feature ${{ env.TEST_PATH_FRONT_END }}
+            rm -rf ${{ env.TEST_PATH_FRONT_END }}/*.feature.cs
+        - name: Build
+          run: dotnet build ${{ env.TEST_PATH_LIB }} --configuration Debug
+        - name: run tests
+            # Run tests
+          run: dotnet test ${{ env.TEST_PATH_LIB }}
+   tests_backend_uat:
+     runs-on: ubuntu-latest
+     needs: tests_calculator
+     steps: 
+        - uses: actions/checkout@v4
+        # Checkout the repository (each job runs in a fresh VM)
+        - name: Setup .NET SDK
+          uses: actions/setup-dotnet@v4
+          with:
+            dotnet-version: ${{ env.DOTNET_CORE_VERSION }}
+        # Setup the .NET SDK version specified in the environment variables
+        - name: Copying Original Cucumber files from item folder
+          run: |
+            cp -r items/*.feature ${{ env.TEST_PATH_BACKEND }}
+            rm -rf ${{ env.TEST_PATH_BACKEND }}/*.feature.cs
+        - name: Build
+          run: dotnet build ${{ env.TEST_PATH_BACKEND }} --configuration Debug
+        - name: run tests
+          # Run tests
+          run: dotnet test ${{ env.TEST_PATH_BACKEND }}
+   tests_frontend_uat:
+     runs-on: ubuntu-latest
+     steps: 
+        - uses: actions/checkout@v4
+        # Checkout the repository (each job runs in a fresh VM)
+        - name: Setup .NET SDK
+          uses: actions/setup-dotnet@v4
+          with:
+            dotnet-version: ${{ env.DOTNET_CORE_VERSION }}
+        # Setup the .NET SDK version specified in the environment variables
+        - name: Copying Original Cucumber files from item folder
+          run: |
+            cp -r items/*.feature ${{ env.TEST_PATH_FRONT_END }}
+            rm -rf ${{ env.TEST_PATH_FRONT_END }}/*.feature.cs
+        - name: Build
+          run: dotnet build ${{ env.TEST_PATH_FRONT_END }} --configuration Debug
+        - name : Install playwright
+          run: pwsh ${{ env.TEST_PATH_FRONT_END }}/bin/Debug/net8.0/playwright.ps1 install --with-deps
+        - name: run tests
+          # Run tests
+          run: dotnet test ${{ env.TEST_PATH_FRONT_END }}
+   build_solution:
+     runs-on: ubuntu-latest
+     needs: [tests_frontend_uat, tests_backend_uat]
+     steps:
+        - uses: actions/checkout@v4
+        - name: Setup .NET SDK
+          uses: actions/setup-dotnet@v4
+          with:
+            dotnet-version: ${{ env.DOTNET_CORE_VERSION }}
+        - name: Build Front-End
+          run: dotnet build ${{ env.WORKING_DIRECTORY_FRONT_END }} --configuration ${{ env.CONFIGURATION }}
+        - name: Build Back-End
+          run: dotnet build ${{ env.WORKING_DIRECTORY_BACKEND }} --configuration ${{ env.CONFIGURATION }}
+        - name: Publish Front-End
+          run: dotnet publish ${{ env.WORKING_DIRECTORY_FRONT_END }} --configuration ${{ env.CONFIGURATION }} --no-build --output ${{ env.AZURE_WEBAPP_PACKAGE_PATH_FRONT_END }}
+        - name: Publish Back-End
+          run: dotnet publish ${{ env.WORKING_DIRECTORY_BACKEND }} --configuration ${{ env.CONFIGURATION }} --no-build --output ${{ env.AZURE_WEBAPP_PACKAGE_PATH_BACK_END }}
+        - name: Publish Artifacts Front-End
+          uses: actions/upload-artifact@v4
+          with:
+            name: webapp
+            path: ${{ env.AZURE_WEBAPP_PACKAGE_PATH_FRONT_END }}
+        - name: Publish Artifacts Back-End
+          uses: actions/upload-artifact@v4
+          with:
+            name: webapp
+            path: ${{ env.AZURE_WEBAPP_PACKAGE_PATH_BACK_END }}
+   deploy_to_prod:
+     runs-on: ubuntu-latest
+     needs: build_solution
+     steps:
+        - name: Download Front-End artifact from build job
+          uses: actions/download-artifact@v4
+          with:
+            name: webapp
+            path: ${{ env.AZURE_WEBAPP_PACKAGE_PATH_FRONT_END }}
+        - name: Download Back-End artifact from build job
+          uses: actions/download-artifact@v4
+          with:
+            name: webapp
+            path: ${{ env.AZURE_WEBAPP_PACKAGE_PATH_BACK_END }}
+        - name: Deploy Front-End to Azure WebApp
+          uses: azure/webapps-deploy@v2
+          with:
+              app-name: ${{ env.AZURE_WEBAPP_NAME_FRONT_END_PROD }}
+              package: ${{ env.AZURE_WEBAPP_PACKAGE_PATH_FRONT_END }}
+              publish-profile: ${{ secrets.MASTER_UGR_CI_FRONTEND_PROD_SPN }}
+        - name: Deploy Back-End to Azure WebApp
+          uses: azure/webapps-deploy@v2
+          with:
+              app-name: ${{ env.AZURE_WEBAPP_NAME_BACKEND_PROD }}
+              package: ${{ env.AZURE_WEBAPP_PACKAGE_PATH_BACK_END }}
+              publish-profile: ${{ secrets.MASTER_UGR_CI_BACKEND_PROD_SPN }}
+
