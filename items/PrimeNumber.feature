@@ -11,8 +11,6 @@ Scenario Outline: Checking several prime numbers
 	| number | result  |
 	| 1      | No      |
 	| 2      | Yes     |
-	| 1      | No      |
-	| 2      | Yes     |
 	| 3      | Yes     |
 	| 4      | No      |
 	| 5      | Yes     |
