@@ -24,5 +24,10 @@ namespace calculator.lib
             }
             return true;
         }
+
+        public static bool IsOdd(int number)
+        {
+            return number % 2 != 0;
+        }
     }
 }
