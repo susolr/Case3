@@ -25,5 +25,8 @@ To run the unit test use following approach:
 -- This will start the project.
 - In second one, open Test Explorer and run all the tests.
 
+# Functionality
+- Previously, there was a mock for the odd numbers. Now it is behaving as expected.
+
 ## License
 This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details.
