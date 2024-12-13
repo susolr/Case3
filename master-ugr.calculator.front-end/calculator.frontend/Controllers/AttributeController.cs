@@ -9,7 +9,10 @@ namespace calculator.frontend.Controllers
         {
             return View();
         }
-        const string base_url = "https://master-ugr-ci-backend-uat.azurewebsites.net";
+        private string base_url =
+            Environment.GetEnvironmentVariable("CALCULATOR_BACKEND_URL") ??
+            "https://master-ugr-ci-backend-uat.azurewebsites.net";
+        const string api = "api/Calculator";
         private KeyValuePair<string,string> ExecuteOperation(string number)
         {
             bool? raw_prime =  null;
