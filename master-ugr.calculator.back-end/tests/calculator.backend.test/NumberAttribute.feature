@@ -8,5 +8,9 @@ Feature: Number Attribute
 	And the answer to know whether is odd or not is <odd>
 Examples:
 	| number | prime | odd  |
-	| 2      | true  | true |
-	| 6      | false | true |
+	| 2      | true  | false|
+	| 6      | false | false|
+	| 7      | true  | true |
+	| 8      | false | false|
+	| 9      | false | true |
+	| 10     | false | false|

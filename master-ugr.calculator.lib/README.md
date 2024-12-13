@@ -15,6 +15,10 @@ The Calculator supports the following operations:
 - Subtraction: Subtracts one number from another.
 - Multiplication: Multiplies two numbers together.
 - Division: Divides one number by another.
+- Prime Number: Returns whether a number is Prime or Not
+- Number attribute: Returns different attributes of a number
+	- Even or Odd -> *ATTENTION: This functionality is mocked*
+	- Prime Number -> Whether is a Prime Number or not.
 
 ## Contributing
 If you would like to contribute to this project, please follow these steps:

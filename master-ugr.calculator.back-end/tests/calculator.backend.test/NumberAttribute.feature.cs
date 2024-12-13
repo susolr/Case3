@@ -83,8 +83,12 @@ namespace calculator.backend.test
         [Xunit.SkippableTheoryAttribute(DisplayName="Checking several numbers")]
         [Xunit.TraitAttribute("FeatureTitle", "Number Attribute")]
         [Xunit.TraitAttribute("Description", "Checking several numbers")]
-        [Xunit.InlineDataAttribute("2", "true", "true", new string[0])]
-        [Xunit.InlineDataAttribute("6", "false", "true", new string[0])]
+        [Xunit.InlineDataAttribute("2", "true", "false", new string[0])]
+        [Xunit.InlineDataAttribute("6", "false", "false", new string[0])]
+        [Xunit.InlineDataAttribute("7", "true", "true", new string[0])]
+        [Xunit.InlineDataAttribute("8", "false", "false", new string[0])]
+        [Xunit.InlineDataAttribute("9", "false", "true", new string[0])]
+        [Xunit.InlineDataAttribute("10", "false", "false", new string[0])]
         public void CheckingSeveralNumbers(string number, string prime, string odd, string[] exampleTags)
         {
             string[] tagsOfScenario = exampleTags;
