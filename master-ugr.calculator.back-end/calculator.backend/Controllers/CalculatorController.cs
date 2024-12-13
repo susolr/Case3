@@ -41,5 +41,12 @@ namespace CalculatorAPI.Controllers
             var is_prime = NumberAttributter.IsPrime(number);
             return Ok(new { result = is_prime });
         }
+
+        [HttpGet("number_attribute")]
+        public ActionResult<bool> NumberAttribute([FromQuery] int number)
+        {
+            var is_prime = NumberAttributter.IsPrime(number);
+            return Ok(new { odd = true, prime = is_prime });
+        }
     }
 }
