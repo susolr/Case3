@@ -25,6 +25,18 @@ To run the unit test use following approach:
 -- This will start the project.
 - In second one, open Test Explorer and run all the tests.
 
+## Supported Functionality
+Following operations are offered as part of the back-end
+
+Two numbers operation
+- Add: Given two numbers, it returns the sum of the two numbers
+- Substract: Given two numbers, it returns the difference of the two numbers
+- Divide: Given two numbers, it returns the division of the two numbers
+- Multiply: Given two numbers, it returns the multiplication of the two numbers
+
+Also, attribute oprations are supported
+- Prime: Given a number, it returns whether the number is prime or not.
+- Odd: Given a number, it returns whether the number is odd or not.
 # Functionality
 - Previously, there was a mock for the odd numbers. Now it is behaving as expected.
 
