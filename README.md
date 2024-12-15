@@ -48,7 +48,12 @@ For shake of this exercise, we will use publish profiles. **_Don't use Publish P
 	- 3.6.- Go to Overview and click on tab Download Publish Profile
 	- 3.7.- Save the file in a secure place
 	- 3.8.- Repeat the process for the other 3 App Services
-		- You should have 4 publish profiles in total: 2 for UAT and 2 for PROD, one for each domain (frontend and backend)
+		- 3.8.1.- You should have 4 publish profiles in total: 2 for UAT and 2 for PROD, one for each domain (frontend and backend)
+	- 3.9.- Set up the environment variable in front-end PROD
+		- 3.9.1.- First, copy the value of the url of Back-End PROD solution (you can find it in the Overview tab under Domains) )
+		- 3.9.2.- Go to the App Service of the Front-End in PROD
+		- 3.9.3.- In the Environment Variables section, add a new variable called CALCULATOR_BACKEND_URL and paste the value of the url of the Back-End PROD solution
+		(Note: The value should be the url of the Back-End PROD solution, otherwise, Front-End PROD will point into UAT)
 Create a fork from Case3.
  - 4.- Setting up secrets in the forked repository
 	- 4.1.- From newly created fork repository, go to settings
@@ -71,6 +76,7 @@ Update the workflows in main branch:
 			 - CALCULATOR_FRONTEND_URL_UAT: https://spock-calculator-frontend-uat.azurewebsites.net
 	    - Replace the value of the variable CALCULATOR_FRONTEND_URL_PROD with the URL of the frontend in PROD
 	         - CALCULATOR_FRONTEND_URL_PROD: https://spock-calculator-frontend.azurewebsites.net
+
 Create case branches:
   - Ensure only main branch is in your repository. Delete all others if any.
   - From main branch, create a dev branch.
