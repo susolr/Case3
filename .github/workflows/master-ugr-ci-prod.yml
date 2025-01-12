@@ -89,6 +89,9 @@ jobs:
           run: dotnet build ${{ env.TEST_PATH_FRONTEND }} --configuration Debug
         - name : Install playwright
           run: pwsh ${{ env.TEST_PATH_FRONTEND }}/bin/Debug/net8.0/playwright.ps1 install --with-deps
+                  # <-- Comprueba backend UAT 'run tests' -->
+        - name: Check backend availability
+          run: curl -I ${{ env.CALCULATOR_BACKEND_URL_UAT }} 
         - name: run tests
           # Run tests
           run: dotnet test ${{ env.TEST_PATH_FRONTEND }}
@@ -183,6 +186,9 @@ jobs:
           run: dotnet build ${{ env.TEST_PATH_FRONTEND }} --configuration Debug
         - name : Install playwright
           run: pwsh ${{ env.TEST_PATH_FRONTEND }}/bin/Debug/net8.0/playwright.ps1 install --with-deps
+                  # <-- Comprueba backend 'run tests' -->
+        - name: Check backend availability (Production)
+          run: curl -I ${{ env.CALCULATOR_BACKEND_URL_PROD }}
         - name: run tests
           # Run tests
           run: dotnet test ${{ env.TEST_PATH_FRONTEND }}
