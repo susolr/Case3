@@ -3,7 +3,7 @@ name: Build and Test back-end
 on:
   push:
     branches:
-      - backend
+      - back-end
       
 env:
   CONFIGURATION: Release
