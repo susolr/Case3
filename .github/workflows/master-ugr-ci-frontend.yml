@@ -2,7 +2,7 @@ name: Build and test front-end
 on:
   push:
     branches:
-      - frontend
+      - front-end
       
 env:      
   CONFIGURATION: Release
