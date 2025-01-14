@@ -1,25 +1,71 @@
-name: Frontend Tests
+name: Backend CI/CD
 
 on:
   push:
     branches:
-      - frontend
+      - main
+      - develop
+  pull_request:
+    branches:
+      - main
+      - develop
+
+env:
+  AZURE_WEBAPP_NAME: susolr-calculator-backend-uat # Cambia esto por el nombre de tu Azure Web App
+  AZURE_WEBAPP_PACKAGE_PATH: master-ugr.calculator.back-end/publish
+  CONFIGURATION: Release
+  DOTNET_CORE_VERSION: 8.0.x
+  WORKING_DIRECTORY: master-ugr.calculator.back-end/calculator.backend
+  TEST_PATH: master-ugr.calculator.back-end/tests/calculator.backend.tests
 
 jobs:
-  test:
+  build-and-test:
+    name: Build and Test Backend
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v3
+      - name: Set up .NET Core
+        uses: actions/setup-dotnet@v3
         with:
-          node-version: '16'
+          dotnet-version: ${{ env.DOTNET_CORE_VERSION }}
 
-      - name: Install dependencies
-        run: npm install
+      - name: Restore dependencies
+        run: dotnet restore ${{ env.WORKING_DIRECTORY }}
+
+      - name: Build the solution
+        run: dotnet build ${{ env.WORKING_DIRECTORY }} --configuration ${{ env.CONFIGURATION }} --no-restore
 
       - name: Run tests
-        run: npm test
+        run: dotnet test ${{ env.TEST_PATH }} --no-restore --verbosity normal
+
+  deploy:
+    name: Deploy Backend to Azure
+    runs-on: ubuntu-latest
+    needs: build-and-test
+    if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop'
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up .NET Core
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: ${{ env.DOTNET_CORE_VERSION }}
+
+      - name: Login to Azure
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      - name: Publish Backend
+        run: dotnet publish ${{ env.WORKING_DIRECTORY }} --configuration ${{ env.CONFIGURATION }} --output ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}
+
+      - name: Deploy to Azure Web App
+        uses: azure/webapps-deploy@v2
+        with:
+          app-name: ${{ env.AZURE_WEBAPP_NAME }}
+          package: ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}
