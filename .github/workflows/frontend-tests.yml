@@ -3,28 +3,26 @@ name: Frontend Tests
 on:
   push:
     branches:
-      - main
-      - frontend
-  pull_request:
-    branches:
-      - main
       - frontend
 
 jobs:
-  test:
+  build:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
+    - name: Checkout code
+      uses: actions/checkout@v2
 
-      - name: Setup .NET
-        uses: actions/setup-dotnet@v3
-        with:
-          dotnet-version: '8.0.x'
+    - name: Setup .NET Core
+      uses: actions/setup-dotnet@v2
+      with:
+        dotnet-version: '8.0.x'
 
-      - name: Restore dependencies
-        run: dotnet restore master-ugr.calculator.front-end/master-ugr.calculator.front-end.sln
+    - name: Restore dependencies
+      run: dotnet restore ./frontend
 
-      - name: Run frontend tests
-        run: dotnet test master-ugr.calculator.front-end/tests/calculator.frontend.tests --no-restore --verbosity normal
+    - name: Build
+      run: dotnet build --configuration Release --no-restore ./frontend
+
+    - name: Test
+      run: dotnet test --no-build --verbosity normal ./frontend

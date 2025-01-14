@@ -1,71 +1,28 @@
-name: Backend CI/CD
+name: Backend Tests
 
 on:
   push:
     branches:
-      - main
-      - develop
-  pull_request:
-    branches:
-      - main
-      - develop
-
-env:
-  AZURE_WEBAPP_NAME: susolr-calculator-backend-uat
-  AZURE_WEBAPP_PACKAGE_PATH: master-ugr.calculator.back-end/publish
-  CONFIGURATION: Release
-  DOTNET_CORE_VERSION: 8.0.x
-  WORKING_DIRECTORY: master-ugr.calculator.back-end/calculator.backend
-  TEST_PATH: master-ugr.calculator.back-end/tests/calculator.backend.tests/calculator.backend.tests.csproj
+      - backend
 
 jobs:
-  build-and-test:
-    name: Build and Test Backend
+  build:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
+    - name: Checkout code
+      uses: actions/checkout@v2
 
-      - name: Set up .NET Core
-        uses: actions/setup-dotnet@v3
-        with:
-          dotnet-version: ${{ env.DOTNET_CORE_VERSION }}
+    - name: Setup .NET Core
+      uses: actions/setup-dotnet@v2
+      with:
+        dotnet-version: '8.0.x'
 
-      - name: Restore dependencies
-        run: dotnet restore ${{ env.WORKING_DIRECTORY }}
+    - name: Restore dependencies
+      run: dotnet restore ./backend
 
-      - name: Build the solution
-        run: dotnet build ${{ env.WORKING_DIRECTORY }} --configuration ${{ env.CONFIGURATION }} --no-restore
+    - name: Build
+      run: dotnet build --configuration Release --no-restore ./backend
 
-      - name: Run tests
-        run: dotnet test ${{ env.TEST_PATH }} --no-restore --verbosity normal
-
-  deploy:
-    name: Deploy Backend to Azure
-    runs-on: ubuntu-latest
-    needs: build-and-test
-    if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop'
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-
-      - name: Set up .NET Core
-        uses: actions/setup-dotnet@v3
-        with:
-          dotnet-version: ${{ env.DOTNET_CORE_VERSION }}
-
-      - name: Login to Azure
-        uses: azure/login@v1
-        with:
-          creds: ${{ secrets.AZURE_CREDENTIALS }}
-
-      - name: Publish Backend
-        run: dotnet publish ${{ env.WORKING_DIRECTORY }} --configuration ${{ env.CONFIGURATION }} --output ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}
-
-      - name: Deploy to Azure Web App
-        uses: azure/webapps-deploy@v2
-        with:
-          app-name: ${{ env.AZURE_WEBAPP_NAME }}
-          package: ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}
+    - name: Test
+      run: dotnet test --no-build --verbosity normal ./backend
