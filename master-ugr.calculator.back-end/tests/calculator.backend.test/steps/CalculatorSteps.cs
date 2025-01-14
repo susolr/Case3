@@ -45,8 +45,15 @@ namespace calculator.lib.test.steps
                 response.EnsureSuccessStatusCode();
                 var responseBody = response.Content.ReadAsStringAsync().Result;
                 var jsonDocument = JsonDocument.Parse(responseBody);
-                var result = jsonDocument.RootElement.GetProperty("result").GetDouble();
-                _scenarioContext.Add("result", result);
+                var resultElement = jsonDocument.RootElement.GetProperty("result");
+                if (resultElement.ValueKind == JsonValueKind.String && resultElement.GetString() == "NaN")
+                {
+                    _scenarioContext.Add("result", double.NaN); // Convertir 'NaN' string a NaN numérico
+                }
+                else
+                {
+                    _scenarioContext.Add("result", resultElement.GetDouble());
+                }
             }
         }
 
@@ -57,6 +64,7 @@ namespace calculator.lib.test.steps
             ApiCall("add");
         }
         [When(@"I divide first number by second number")]
+        [When(@"I divide both numbers")]
         public void WhenIDivideFirstNumberBySecondNumber()
         {
             ApiCall("divide");
@@ -80,7 +88,16 @@ namespace calculator.lib.test.steps
         public void ThenTheResultShouldBe(double expectedResult)
         {
             var result = _scenarioContext.Get<double>("result");
-            Assert.Equal(expectedResult, result);
+
+            // Manejo de NaN
+            if (double.IsNaN(expectedResult))
+            {
+                Assert.True(double.IsNaN(result), "Expected result to be NaN, but it was not.");
+            }
+            else
+            {
+                Assert.Equal(expectedResult, result);
+            }
         }
     }
 }
