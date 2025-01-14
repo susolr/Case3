@@ -1,0 +1,61 @@
+name: Deploy Frontend
+
+on:
+  push:
+    branches:
+      - main
+      - frontend
+
+env:
+  # Variables de entorno
+  AZURE_WEBAPP_NAME: susolr-calculator-frontend-uat
+  AZURE_WEBAPP_PACKAGE_PATH: master-ugr.calculator.front-end/calculator.frontend/publish
+  CONFIGURATION: Release
+  DOTNET_CORE_VERSION: 8.0.x
+  WORKING_DIRECTORY: master-ugr.calculator.front-end/calculator.frontend
+  TEST_PATH: master-ugr.calculator.front-end/tests/calculator.frontend.tests
+  CALCULATOR_FRONTEND_URL: https://susolr-calculator-frontend-uat.azurewebsites.net
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Checkout the code
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      # Setup .NET
+      - name: Setup .NET Core
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: ${{ env.DOTNET_CORE_VERSION }}
+
+      # Restore dependencies
+      - name: Restore Dependencies
+        run: dotnet restore ${{ env.WORKING_DIRECTORY }}
+
+      # Build the project
+      - name: Build Project
+        run: dotnet build ${{ env.WORKING_DIRECTORY }} --configuration ${{ env.CONFIGURATION }} --no-restore
+
+      # Run tests
+      - name: Run Tests
+        run: dotnet test ${{ env.TEST_PATH }}
+
+      # Publish the application
+      - name: Publish Application
+        run: dotnet publish ${{ env.WORKING_DIRECTORY }} --configuration ${{ env.CONFIGURATION }} --output ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}
+
+      # Login to Azure
+      - name: Azure Login
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      # Deploy to Azure Web App
+      - name: Deploy to Azure Web App
+        uses: azure/webapps-deploy@v2
+        with:
+          app-name: ${{ env.AZURE_WEBAPP_NAME }}
+          package: ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}
