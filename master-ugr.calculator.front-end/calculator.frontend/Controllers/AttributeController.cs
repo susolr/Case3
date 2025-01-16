@@ -34,7 +34,7 @@ namespace calculator.frontend.Controllers
             return View();
         }
 
-        private KeyValuePair<string, string> ExecuteOperation(string number)
+        private Triple ExecuteOperation(string number)
         {
             string url = BuildUrl(number);
 
