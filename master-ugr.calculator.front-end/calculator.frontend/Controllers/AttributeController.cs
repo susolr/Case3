@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json.Linq;
+using System;
 
 namespace calculator.frontend.Controllers
 {
@@ -9,11 +10,11 @@ namespace calculator.frontend.Controllers
         public string isOdd { get; }
         public string sqrt { get; }
 
-        public Triple(string prime, string odd, string sqrt)
+        public Triple(string prime, string odd, string iSqrt)
         {
             isPrime = prime;
             isOdd = odd;
-            sqrt = sqrt;
+            sqrt = iSqrt;
         }
     }
     public class AttributeController : Controller
@@ -24,13 +25,21 @@ namespace calculator.frontend.Controllers
 
         const string api = "api/Calculator";
 
+        public IActionResult Index()
+        {
+            return View();
+        }
+
         [HttpPost]
         public IActionResult Index(string number)
         {
+            Console.WriteLine("Antes de Execute");
             var result = ExecuteOperation(number);
+            Console.WriteLine("Despues de execute");
             ViewBag.IsPrime = result.isPrime;
             ViewBag.IsOdd   = result.isOdd;
             ViewBag.Sqrt    = result.sqrt;
+            Console.WriteLine(ViewBag.Sqrt);
             return View();
         }
 
@@ -69,7 +78,7 @@ namespace calculator.frontend.Controllers
 
             string isPrime = rawPrime == true ? "Yes" : rawPrime == false ? "No" : "unknown";
             string isOdd = rawOdd == true ? "Yes" : rawOdd == false ? "No" : "unknown";
-            string sqrtResult = raw_sqrt != null ? raw_sqrt.Value.ToString("N0") : "unknown";
+            string sqrtResult = raw_sqrt != null ? raw_sqrt.Value.ToString("N2") : "unknown";
 
             return new Triple(isPrime,isOdd,sqrtResult);
         }
