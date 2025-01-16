@@ -24,75 +24,13 @@ namespace calculator.frontend.Controllers
 
         const string api = "api/Calculator";
 
-        public IActionResult Index()
-        {
-            return View();
-        }
-
-        private Triple ExecuteOperation(string number)
-        {
-            bool? raw_prime =  null;
-            bool? raw_odd = null;
-            double? raw_sqrt = null;
-            var clientHandler = new HttpClientHandler();
-            var client = new HttpClient(clientHandler);
-            var url = $"{base_url}/api/Calculator/number_attribute?number={number}";
-            var request = new HttpRequestMessage
-            {
-                Method = HttpMethod.Get,
-                RequestUri = new Uri(url),
-            };
-            using (var response = client.Send(request))
-            {
-                response.EnsureSuccessStatusCode();
-                var body = response.Content.ReadAsStringAsync().Result;
-                var json = JObject.Parse(body);
-                var prime = json["prime"];
-                var odd = json["odd"];
-                var srqt = json["square_root"];
-                if (prime != null)
-                {
-                    raw_prime = prime.Value<bool>();
-                }
-                if (odd != null)
-                {
-                    raw_odd = odd.Value<bool>();
-                }
-                if(srqt != null){
-                    raw_sqrt = srqt.Value<double>();
-                }
-
-            }
-            var isPrime = "unknown";
-            if (raw_prime != null && raw_prime.Value)
-            {
-                isPrime = "Yes";
-            }
-            else if (raw_prime != null && !raw_prime.Value)
-            {
-                isPrime = "No";
-            }
-            var isOdd = "unknown";
-            if (raw_odd != null && raw_odd.Value)
-            {
-                isOdd = "Yes";
-            }
-            else if (raw_odd != null && !raw_odd.Value)
-            {
-                isOdd = "No";
-            }
-            var sqrtResult = "unknown";
-            if(raw_sqrt != null){
-                sqrtResult = raw_sqrt.Value.ToString("N0");
-            }
-            return new Triple(isPrime,isOdd,sqrtResult);
-        }
         [HttpPost]
         public IActionResult Index(string number)
         {
             var result = ExecuteOperation(number);
-            ViewBag.IsPrime = result.Key;
-            ViewBag.IsOdd = result.Value;
+            ViewBag.IsPrime = result.isPrime;
+            ViewBag.IsOdd   = result.isOdd;
+            ViewBag.Sqrt    = result.sqrt;
             return View();
         }
 
@@ -123,15 +61,17 @@ namespace calculator.frontend.Controllers
             }
         }
 
-        private KeyValuePair<string, string> ParseAttributes(JObject attributes)
+        private Triple ParseAttributes(JObject attributes)
         {
             bool? rawPrime = attributes["prime"]?.Value<bool>();
             bool? rawOdd = attributes["odd"]?.Value<bool>();
+            double? raw_sqrt = attributes["square_root"]?.Value<double>();
 
             string isPrime = rawPrime == true ? "Yes" : rawPrime == false ? "No" : "unknown";
             string isOdd = rawOdd == true ? "Yes" : rawOdd == false ? "No" : "unknown";
+            string sqrtResult = raw_sqrt != null ? raw_sqrt.Value.ToString("N0") : "unknown";
 
-            return new KeyValuePair<string, string>(isPrime, isOdd);
+            return new Triple(isPrime,isOdd,sqrtResult);
         }
     }
 }
