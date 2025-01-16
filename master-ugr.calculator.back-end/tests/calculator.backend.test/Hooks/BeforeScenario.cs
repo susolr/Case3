@@ -14,11 +14,19 @@ namespace calculator.backend.test.Hooks
         [BeforeScenario]
         public void ScenarioPreparation(ScenarioContext scenarioContext)
         {
-            // Getting url from environment variable
-            // When not present, default to https://localhost:7012/
-            var urlBase =
-                Environment.GetEnvironmentVariable("CALCULATOR_BACKEND_URL") ?? "https://localhost:7012/";
+            var urlBase = GetUrlBase();
+            Console.WriteLine($"Using URL: {urlBase}");
             _scenarioContext.Add("urlBase", urlBase);
         }
+
+        private string GetUrlBase()
+        {
+            var urlBase = Environment.GetEnvironmentVariable("CALCULATOR_BACKEND_URL")
+                          ?? Environment.GetEnvironmentVariable("CALCULATOR_BACKEND_URL_UAT")
+                          ?? "https://localhost:7012/";
+
+            return urlBase.EndsWith("/") ? urlBase : urlBase + "/";
+        }
+
     }
 }
