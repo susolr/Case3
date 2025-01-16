@@ -79,6 +79,7 @@ namespace calculator.frontend.tests.steps
             var ok = expectedResult.Equals(americanDouble) || 
                 expectedResult.Equals(latinDouble);
             Assert.True(ok, $"expected {expectedResult} but actual {resultText}");
+            
         }
     }
 }
