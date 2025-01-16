@@ -3,7 +3,7 @@ on:
   workflow_dispatch:
   push:
     branches:
-    - lib
+      - front-end
       
 env:      
   CONFIGURATION: Release
