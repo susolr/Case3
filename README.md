@@ -95,7 +95,7 @@ If you would like to contribute to this project, please follow these steps:
 3. Make your changes and commit them with a descriptive message.
 4. Push your changes to your fork.
 5. Create a pull request to the main repository.
-
+ 
 ## About the workflows
 - master-ugr-ci-backend-uat is the workflow for the backend domain environment. 
 - master-ugr-ci-frontend-uat is the workflow for the frontend domain environment.

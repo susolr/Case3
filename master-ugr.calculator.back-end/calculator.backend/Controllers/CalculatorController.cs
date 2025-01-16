@@ -44,12 +44,20 @@ namespace CalculatorAPI.Controllers
             return Ok(new { result = is_prime });
         }
 
+        [HttpGet("square_root")]
+        public ActionResult<bool> SquareRoot([FromQuery] int number)
+        {
+            var sqrt = NumberAttributter.SquareRoot(number);
+            return Ok(new { result = sqrt });
+        }
+
         [HttpGet("number_attribute")]
         public ActionResult<bool> NumberAttribute([FromQuery] int number)
         {
             var is_prime = NumberAttributter.IsPrime(number);
             var is_odd = NumberAttributter.IsOdd(number);
-            return Ok(new { odd = is_odd, prime = is_prime });
+            var sqrt = NumberAttributter.SquareRoot(number);
+            return Ok(new { odd = is_odd, prime = is_prime, square_root = sqrt });
         }
     }
 }

@@ -80,5 +80,6 @@ namespace calculator.frontend.tests.steps
                 expectedResult.Equals(latinDouble);
             Assert.True(ok, $"expected {expectedResult} but actual {resultText}");
         }
+        
     }
 }
