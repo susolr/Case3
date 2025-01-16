@@ -1,8 +1,9 @@
 name: Build and test front-end
 on:
+  workflow_dispatch:
   push:
     branches:
-      - front-end
+    - lib
       
 env:      
   CONFIGURATION: Release
