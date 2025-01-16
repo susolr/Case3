@@ -32,7 +32,7 @@ namespace CalculatorAPI.Controllers
         public ActionResult<double> Divide([FromQuery] double a, [FromQuery] double b)
         {
             // Manejar división por 0 devolviendo NaN
-            var final_result = b == 0 ? double.NaN : Calculator.Divide((int)a, (int)b);
+            var final_result = Calculator.Divide((int)a, (int)b);
 
             return Ok(new { result = final_result });
         }
