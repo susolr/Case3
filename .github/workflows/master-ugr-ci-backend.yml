@@ -10,7 +10,7 @@ env:
   CONFIGURATION: Release
   DOTNET_CORE_VERSION: 8.0.x
   WORKING_DIRECTORY: master-ugr.calculator.back-end/calculator.backend
-  TEST_PATH: master-ugr.calculator.back-end/tests
+  TEST_PATH: master-ugr.calculator.back-end/tests/calculator.backend.test
 
 jobs:
   build:
