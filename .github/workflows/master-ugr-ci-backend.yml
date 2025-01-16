@@ -1,0 +1,48 @@
+name: Build and Test back-end 
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+    - back-end
+      
+env:
+  CONFIGURATION: Release
+  DOTNET_CORE_VERSION: 8.0.x
+  WORKING_DIRECTORY: master-ugr.calculator.back-end/calculator.backend
+  TEST_PATH: master-ugr.calculator.back-end/tests
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v4
+    - name: Listing current dir
+      run: ls -la
+      
+    - name: Setup .NET SDK
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: ${{ env.DOTNET_CORE_VERSION }}
+        
+    - name: Restore
+      run: dotnet restore "${{ env.WORKING_DIRECTORY }}"
+      
+    - name: Build
+      run: dotnet build "${{ env.WORKING_DIRECTORY }}" --configuration ${{ env.CONFIGURATION }} --no-restore
+  
+  test:
+    runs-on: ubuntu-latest
+    needs: build
+    
+    steps:
+      - uses: actions/checkout@v4  
+      
+      - name: Setup .NET SDK
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: ${{ env.DOTNET_CORE_VERSION }}
+          
+      - name: run tests
+        run: dotnet test ${{ env.TEST_PATH }}
