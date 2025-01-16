@@ -81,5 +81,6 @@ namespace calculator.frontend.tests.steps
             Assert.True(ok, $"expected {expectedResult} but actual {resultText}");
             
         }
+        
     }
 }
