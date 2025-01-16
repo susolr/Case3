@@ -3,6 +3,19 @@ using Newtonsoft.Json.Linq;
 
 namespace calculator.frontend.Controllers
 {
+    public struct Triple
+    {
+        public string isPrime { get; }
+        public string isOdd { get; }
+        public string sqrt { get; }
+
+        public Triple(string prime, string odd, string sqrt)
+        {
+            isPrime = prime;
+            isOdd = odd;
+            sqrt = sqrt;
+        }
+    }
     public class AttributeController : Controller
     {
         private string base_url =
@@ -11,23 +24,17 @@ namespace calculator.frontend.Controllers
 
         const string api = "api/Calculator";
 
-        public IActionResult Index()
-        {
-            return View();
-        }
-
         [HttpPost]
         public IActionResult Index(string number)
         {
             var result = ExecuteOperation(number);
-
-            ViewBag.IsPrime = result.Key;
-            ViewBag.IsOdd = result.Value;
-
+            ViewBag.IsPrime = result.isPrime;
+            ViewBag.IsOdd   = result.isOdd;
+            ViewBag.Sqrt    = result.sqrt;
             return View();
         }
 
-        private KeyValuePair<string, string> ExecuteOperation(string number)
+        private Triple ExecuteOperation(string number)
         {
             string url = BuildUrl(number);
 
@@ -54,15 +61,17 @@ namespace calculator.frontend.Controllers
             }
         }
 
-        private KeyValuePair<string, string> ParseAttributes(JObject attributes)
+        private Triple ParseAttributes(JObject attributes)
         {
             bool? rawPrime = attributes["prime"]?.Value<bool>();
             bool? rawOdd = attributes["odd"]?.Value<bool>();
+            double? raw_sqrt = attributes["square_root"]?.Value<double>();
 
             string isPrime = rawPrime == true ? "Yes" : rawPrime == false ? "No" : "unknown";
             string isOdd = rawOdd == true ? "Yes" : rawOdd == false ? "No" : "unknown";
+            string sqrtResult = raw_sqrt != null ? raw_sqrt.Value.ToString("N0") : "unknown";
 
-            return new KeyValuePair<string, string>(isPrime, isOdd);
+            return new Triple(isPrime,isOdd,sqrtResult);
         }
     }
 }
