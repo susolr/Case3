@@ -14,4 +14,8 @@
     <ProjectReference Include="..\..\master-ugr.calculator.lib\calculator.lib\calculator.lib.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+  </ItemGroup>
+
 </Project>
