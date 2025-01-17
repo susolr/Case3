@@ -38,3 +38,19 @@ jobs:
       env:
         SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
       run: snyk test --file=master-ugr.calculator.back-end/calculator.backend/calculator.backend.csproj --severity-threshold=high --package-manager=nuget
+
+
+    - name: Restore Frontend Dependencies
+      run: dotnet restore master-ugr.calculator.front-end/calculator.frontend/calculator.frontend.csproj
+
+    - name: Run Snyk Test for Frontend
+      env:
+        SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+      run: |
+        snyk test --file=master-ugr.calculator.front-end/calculator.frontend/calculator.frontend.csproj --severity-threshold=high --package-manager=nuget
+
+    - name: Monitor Snyk (optional)
+      env:
+        SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+      run: |
+        snyk monitor --file=master-ugr.calculator.front-end/calculator.frontend/calculator.frontend.csproj --package-manager=nuget
