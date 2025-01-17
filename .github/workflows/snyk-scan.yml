@@ -35,16 +35,16 @@ jobs:
       env:
         SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
       run: |
-        snyk test --file=Case3\master-ugr.calculator.back-end\calculator.backend\calculator.backend.csproj --severity-threshold=high
+        snyk test --file=/home/runner/work/Case3/Case3/master-ugr.calculator.back-end/calculator.backend/calculator.backend.csproj --severity-threshold=high
     
     - name: Run Snyk Test for Frontend
       env:
         SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
       run: |
-        snyk test --file=Case3\master-ugr.calculator.front-end\calculator.frontend\calculator.frontend.csproj --severity-threshold=high
+        snyk test --file=/home/runner/work/Case3/Case3/master-ugr.calculator.front-end/calculator.frontend/calculator.frontend.csproj --severity-threshold=high
 
     - name: Monitor Snyk (optional)
       env:
         SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
       run: |
-        snyk monitor --file=Case3/master-ugr.calculator.front-end/calculator.frontend/calculator.frontend.csproj
+        snyk monitor --file=/home/runner/work/Case3/Case3/master-ugr.calculator.front-end/calculator.frontend/calculator.frontend.csproj
