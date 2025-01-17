@@ -1,0 +1,44 @@
+name: Snyk Scan
+
+on:
+  push:
+    branches:
+      - main
+      - backend
+      - frontend
+  pull_request:
+    branches:
+      - main
+      - backend
+      - frontend
+
+jobs:
+  snyk:
+    name: Snyk Security Scan
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+
+    - name: Set up .NET Core
+      uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: 8.0.x
+
+    - name: Install Snyk CLI
+      uses: snyk/actions/setup@master
+      with:
+        version: 'latest'
+
+    - name: Run Snyk Test
+      env:
+        SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+      run: |
+        snyk test --file=path/to/project.csproj --severity-threshold=high
+
+    - name: Monitor Snyk (optional)
+      env:
+        SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+      run: |
+        snyk monitor --file=path/to/Case3/master-ugr.calculator.front-end/calculator.frontend/calculator.frontend.csproj
