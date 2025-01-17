@@ -37,8 +37,8 @@ jobs:
     - name: Run Snyk Test for Backend
       env:
         SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
-      run: |
-        snyk test --file=master-ugr.calculator.back-end/calculator.backend/calculator.backend.csproj --severity-threshold=high --package-manager=nuget
+      run: snyk test --severity-threshold=high
+
 
     - name: Restore Frontend Dependencies
       run: dotnet restore master-ugr.calculator.front-end/calculator.frontend/calculator.frontend.csproj
