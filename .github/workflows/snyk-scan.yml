@@ -35,7 +35,7 @@ jobs:
       env:
         SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
       run: |
-        snyk test --file=/home/runner/work/Case3/Case3/master-ugr.calculator.back-end/calculator.backend/calculator.backend.csproj --severity-threshold=high
+        snyk test --file=master-ugr.calculator.back-end/calculator.backend/calculator.backend.csproj --severity-threshold=high
     
     - name: Run Snyk Test for Frontend
       env:
