@@ -12,6 +12,9 @@ on:
       - back-end
       - front-end
 
+env:
+  SNYK_TOKEN: "95d80f35-ff10-4b78-9414-12afa8fc8a4e"
+
 jobs:
   snyk:
     name: Snyk Security Scan
