@@ -33,7 +33,10 @@ jobs:
 
     - name: Restore Backend Dependencies
       run: dotnet restore master-ugr.calculator.back-end/calculator.backend/calculator.backend.csproj
-
+      
+    - name: Change to Backend Directory
+      run: cd master-ugr.calculator.back-end/calculator.backend
+      
     - name: Run Snyk Test for Backend
       env:
         SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
