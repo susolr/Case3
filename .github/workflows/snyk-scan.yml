@@ -41,4 +41,4 @@ jobs:
       env:
         SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
       run: |
-        snyk monitor --file=path/to/Case3/master-ugr.calculator.front-end/calculator.frontend/calculator.frontend.csproj
+        snyk monitor --file=Case3/master-ugr.calculator.front-end/calculator.frontend/calculator.frontend.csproj
