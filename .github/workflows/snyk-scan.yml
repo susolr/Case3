@@ -43,7 +43,7 @@ jobs:
 
     - name: Restore Frontend Dependencies
       run: dotnet restore master-ugr.calculator.front-end/calculator.frontend/calculator.frontend.csproj
-
+    
     - name: Run Snyk Test for Frontend
       env:
         SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
