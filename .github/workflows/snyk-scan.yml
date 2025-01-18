@@ -52,5 +52,4 @@ jobs:
     - name: Monitor Snyk (optional)
       env:
         SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
-      run: |
-        snyk monitor --file=master-ugr.calculator.front-end/calculator.frontend/calculator.frontend.csproj --package-manager=nuget
+      run: snyk monitor --file=master-ugr.calculator.front-end/master-ugr.calculator.front-end.sln --package-manager=nuget --debug
