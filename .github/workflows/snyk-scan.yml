@@ -47,7 +47,7 @@ jobs:
     - name: Run Snyk Test for Frontend
       env:
         SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
-      run: snyk test --file=master-ugr.calculator.back-end/master-ugr.calculator.front-end.sln --severity-threshold=high --package-manager=nuget --debug
+      run: snyk test --file=master-ugr.calculator.front-end/master-ugr.calculator.front-end.sln --severity-threshold=high --package-manager=nuget --debug
 
     - name: Monitor Snyk (optional)
       env:
